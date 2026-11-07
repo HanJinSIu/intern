@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>내 인턴 보드</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f7f9; --surface:#ffffff; --line:#e6e8ec; --text:#191c21; --sub:#6b7280; --faint:#9aa1ab;
+  --accent:#2f5bea; --accent-soft:#eaf0ff; --hot:#e5484d; --hot-soft:#fdecec; --new:#12a150; --new-soft:#e6f6ec;
+  --chip:#f1f3f5; --shadow:0 1px 2px rgba(16,24,40,.04),0 4px 14px rgba(16,24,40,.06);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1115; --surface:#171a21; --line:#262a33; --text:#e9ecf1; --sub:#a0a7b3; --faint:#6f7783;
+    --accent:#7d9bff; --accent-soft:#1d2540; --hot:#ff6b6f; --hot-soft:#3a1d20; --new:#3ccf7d; --new-soft:#15301f;
+    --chip:#21252e; --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1115; --surface:#171a21; --line:#262a33; --text:#e9ecf1; --sub:#a0a7b3; --faint:#6f7783;
+  --accent:#7d9bff; --accent-soft:#1d2540; --hot:#ff6b6f; --hot-soft:#3a1d20; --new:#3ccf7d; --new-soft:#15301f;
+  --chip:#21252e; --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Noto Sans KR",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 16px 60px}
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:26px}
+h1{margin:0;font-size:26px;font-weight:800;letter-spacing:-.02em}
+.updated{color:var(--sub);font-size:13px;margin-top:6px}
+.stats{display:flex;gap:8px;flex-wrap:wrap}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 14px;font-size:13px;color:var(--sub)}
+.stat b{color:var(--text);font-size:16px;margin-left:4px}
+h2{font-size:19px;font-weight:800;margin:0 0 14px;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
+h2 .count{color:var(--accent);font-weight:700;font-size:15px}
+section{margin-bottom:38px}
+
+/* 가로 캐러셀 */
+.rail-wrap{position:relative}
+.rail{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(250px,1fr);gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:2px 2px 10px;scrollbar-width:thin}
+.rail .card{scroll-snap-align:start}
+@media (min-width:1000px){.rail{grid-auto-columns:calc((100% - 48px)/4)}}
+.navbtn{position:absolute;top:42%;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--text);box-shadow:var(--shadow);cursor:pointer;font-size:18px;display:none}
+@media (min-width:700px){.navbtn{display:block}}
+.navbtn.l{left:-14px}.navbtn.r{right:-14px}
+
+/* 컨트롤 */
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tab{border:1px solid var(--line);background:var(--surface);color:var(--sub);padding:8px 14px;border-radius:999px;font:inherit;font-size:14px;font-weight:500;cursor:pointer}
+.tab.on{background:var(--text);color:var(--surface);border-color:var(--text)}
+.tab .n{opacity:.7;margin-left:4px;font-size:12px}
+.spacer{flex:1}
+input[type=search],select{font:inherit;font-size:14px;border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:10px;padding:8px 12px}
+input[type=search]{min-width:0;width:200px}
+.toggle{font-size:13px;color:var(--sub);display:flex;align-items:center;gap:5px;cursor:pointer;user-select:none}
+
+/* 카드 그리드 */
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+@media (max-width:1000px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:760px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.grid{grid-template-columns:1fr}}
+.card{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:14px;display:flex;flex-direction:column;text-decoration:none;color:inherit;transition:transform .12s,box-shadow .12s;min-width:0}
+.card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.card.hidden-item{opacity:.45}
+.logo{height:118px;display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--line);border-radius:14px 14px 0 0;background:#fff;overflow:hidden}
+.logo img{max-width:62%;max-height:64px;object-fit:contain}
+.mono{width:58px;height:58px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:22px;color:#fff}
+.body{padding:14px 16px 14px;display:flex;flex-direction:column;gap:6px;flex:1}
+.title{font-size:15px;font-weight:700;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:keep-all;overflow-wrap:anywhere;min-height:2.9em}
+.org{font-size:13px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meta{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:8px;font-size:12.5px;color:var(--sub);gap:6px}
+.chips{display:flex;gap:5px;align-items:center;flex-wrap:wrap;min-width:0}
+.meta > span:last-child{white-space:nowrap;flex-shrink:0}
+.chip{border-radius:7px;padding:3px 8px;font-weight:700;font-size:12.5px;background:var(--chip);color:var(--sub)}
+.chip.hot{background:var(--hot-soft);color:var(--hot)}
+.chip.new{background:var(--new-soft);color:var(--new)}
+.chip.src{font-weight:500}
+.chip.core{background:var(--accent-soft);color:var(--accent)}
+.card.is-core{border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
+.actions{position:absolute;top:8px;right:8px;display:flex;gap:4px}
+.icon{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--faint);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;padding:0}
+.icon.on{color:#f5a524;border-color:#f5a52466}
+.badge-scrap{position:absolute;top:8px;left:8px;background:rgba(25,28,33,.78);color:#fff;font-size:11.5px;font-weight:700;border-radius:6px;padding:3px 7px}
+.empty{color:var(--sub);padding:40px 0;text-align:center;font-size:14px}
+footer{color:var(--faint);font-size:12px;text-align:center;margin-top:30px}
+@media (max-width:560px){input[type=search]{width:100%}.spacer{display:none}h1{font-size:22px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>내 인턴 보드</h1>
+      <div class="updated" id="updated"></div>
+    </div>
+    <div class="stats" id="stats"></div>
+  </header>
+
+  <section>
+    <h2>전체 공고 <span class="count" id="allCount"></span></h2>
+    <div class="controls">
+      <div class="tabs" id="tabs"></div>
+      <div class="spacer"></div>
+      <input type="search" id="q" placeholder="회사·제목 검색">
+      <select id="sort">
+        <option value="deadline">마감 빠른순</option>
+        <option value="new">새로 뜬 순</option>
+        <option value="views">조회 많은 순</option>
+      </select>
+      <label class="toggle"><input type="checkbox" id="starOnly"> ⭐ 관심만</label>
+      <label class="toggle"><input type="checkbox" id="showHidden"> 숨김 보기</label>
+    </div>
+    <div class="grid" id="grid"></div>
+  </section>
+  <footer>카드를 누르면 회사 지원 페이지로 이동 (📄 = 링커리어 공고) · 3시간마다 자동 갱신</footer>
+</div>
+
+<!-- 공고 데이터: intern_alert.py 가 3시간마다 이 파일만 갱신 -->
+<script src="board_data.js"></script>
+<script>
+const DATA = window.BOARD_DATA || {updated: Date.now(), items: []};
+const DAY = 864e5, now = Date.now();
+const store = {
+  get(k, d){ try { return JSON.parse(localStorage.getItem(k)) ?? d } catch(e){ return d } },
+  set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)) } catch(e){} }
+};
+let stars = new Set(store.get("stars", [])), hidden = new Set(store.get("hidden", []));
+let tab = store.get("tab", "전체");
+
+const items = DATA.items.filter(it => !(it.close_ms && it.close_ms < now));
+const dleft = it => it.close_ms ? Math.ceil((it.close_ms - now) / DAY) : null;
+const isNew = it => now - (it.first_seen || 0) < DAY;
+
+function ddayLabel(it){
+  const d = dleft(it);
+  if (it.asap) return "채용 시 마감";
+  if (d === null) return it.src === "금투협" ? (it.deadline || "") : "상시";
+  return d <= 0 ? "D-Day" : "D-" + d;
+}
+const PALETTE = ["#2f5bea","#0f9d76","#d9480f","#7048e8","#c2255c","#1c7ed6","#5c940d","#e67700"];
+function monoColor(s){ let h=0; for (const c of s) h = (h*31 + c.charCodeAt(0)) >>> 0; return PALETTE[h % PALETTE.length]; }
+function esc(s){ return String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function cleanOrg(s){ return s.replace(/^(\(주\)|주식회사|㈜)\s*/,"").replace(/\s*(\(주\)|주식회사)$/,""); }
+
+function card(it){
+  const d = dleft(it), hot = !it.asap && d !== null && d <= 7;
+  const org = cleanOrg(it.org || "");
+  const logo = it.logo
+    ? `<img src="${esc(it.logo)}" alt="" loading="lazy" onerror="this.replaceWith(mono('${esc(org).replace(/'/g,"")}'))">`
+    : monoHTML(org);
+  const scrap = it.scraps ? `<span class="badge-scrap" title="링커리어에서 이 공고를 스크랩(북마크)한 사람 수">스크랩 ${it.scraps > 999 ? "999+" : it.scraps}</span>` : "";
+  return `<a class="card ${hidden.has(it.id) ? "hidden-item" : ""}" href="${esc(it.apply_email ? it.url : (it.apply || it.url))}" target="_blank" rel="noopener" title="${it.apply_email ? "이메일 지원 공고 — 링커리어에서 확인 (" + esc(it.apply_email) + ")" : it.apply ? "회사 지원 페이지로 이동" : "공고 페이지로 이동"}">
+    <div class="logo">${logo}</div>${scrap}
+    <div class="actions">
+      <button class="icon ${stars.has(it.id) ? "on" : ""}" title="관심" onclick="toggle(event,'stars','${it.id}')">${stars.has(it.id) ? "★" : "☆"}</button>
+      ${it.src === "링커리어" ? `<button class="icon" title="링커리어 공고 보기" onclick="openUrl(event,'${esc(it.url)}')">📄</button>` : ""}
+      <button class="icon" title="${hidden.has(it.id) ? "다시 보기" : "숨기기"}" onclick="toggle(event,'hidden','${it.id}')">${hidden.has(it.id) ? "↺" : "✕"}</button>
+    </div>
+    <div class="body">
+      <div class="title">${esc(it.title)}</div>
+      <div class="org">${esc(org)}</div>
+      <div class="meta">
+        <div class="chips">
+          <span class="chip ${hot ? "hot" : ""}">${esc(ddayLabel(it))}</span>
+          ${isNew(it) ? '<span class="chip new">NEW</span>' : ""}
+          ${it.bigco ? '<span class="chip core">🏢 대기업</span>' : ""}
+          ${it.apply_email ? '<span class="chip">📧 메일지원</span>' : ""}
+          <span class="chip src">${esc(it.src === "금투협" ? "금투협" : it.group)}</span>
+        </div>
+        <span>${it.views != null ? "조회 " + Number(it.views).toLocaleString() : esc(it.posted ? "게시 " + it.posted.slice(5) : "")}</span>
+      </div>
+    </div>
+  </a>`;
+}
+function monoHTML(name){ const ch = (name || "?").trim().charAt(0); return `<div class="mono" style="background:${monoColor(name||"?")}">${esc(ch)}</div>`; }
+function mono(name){ const t = document.createElement("template"); t.innerHTML = monoHTML(name); return t.content.firstChild; }
+
+function toggle(e, key, id){
+  e.preventDefault(); e.stopPropagation();
+  const set = key === "stars" ? stars : hidden;
+  set.has(id) ? set.delete(id) : set.add(id);
+  store.set(key, [...set]); render();
+}
+function openUrl(e, url){ e.preventDefault(); e.stopPropagation(); window.open(url, "_blank", "noopener"); }
+
+const GROUPS = ["전체", "금융·투자", "전략·기획", "AI·에이전트"];
+const inGroup = (it, g) => g === "전체" || (g === "🏢 대기업" ? !!it.bigco : it.group === g);
+function render(){
+  const visible = items.filter(it => !hidden.has(it.id));
+  // 통계
+  document.getElementById("updated").textContent = "마지막 갱신 " + new Date(DATA.updated).toLocaleString("ko-KR", {month:"long", day:"numeric", hour:"2-digit", minute:"2-digit"});
+  const newN = visible.filter(isNew).length, hotN = visible.filter(it => { const d = dleft(it); return d !== null && d <= 7; }).length;
+  document.getElementById("stats").innerHTML =
+    `<div class="stat">전체<b>${visible.length}</b></div><div class="stat">오늘 NEW<b>${newN}</b></div><div class="stat">D-7 이내<b>${hotN}</b></div><div class="stat">⭐ 관심<b>${[...stars].filter(id => items.some(i => i.id === id)).length}</b></div>`;
+
+  // 탭
+  document.getElementById("tabs").innerHTML = GROUPS.map(g => {
+    const n = visible.filter(i => inGroup(i, g)).length;
+    return `<button class="tab ${g === tab ? "on" : ""}" onclick="setTab('${g}')">${g}<span class="n">${n}</span></button>`;
+  }).join("");
+
+  // 그리드
+  const q = document.getElementById("q").value.trim().toLowerCase();
+  const sort = document.getElementById("sort").value;
+  const starOnly = document.getElementById("starOnly").checked, showHidden = document.getElementById("showHidden").checked;
+  let list = items.filter(it =>
+    (showHidden || !hidden.has(it.id)) &&
+    inGroup(it, tab) &&
+    (!starOnly || stars.has(it.id)) &&
+    (!q || (it.title + " " + it.org).toLowerCase().includes(q)));
+  const far = 9e15;
+  if (sort === "deadline") list.sort((a,b) => (a.close_ms || far) - (b.close_ms || far));
+  if (sort === "new") list.sort((a,b) => (b.first_seen || 0) - (a.first_seen || 0) || b.id.localeCompare(a.id));
+  if (sort === "views") list.sort((a,b) => (b.views || 0) - (a.views || 0));
+  document.getElementById("allCount").textContent = list.length + "건";
+  document.getElementById("grid").innerHTML = list.length ? list.map(card).join("") : '<div class="empty">조건에 맞는 공고가 없어요</div>';
+}
+function setTab(g){ tab = g; store.set("tab", g); render(); }
+["q","sort","starOnly","showHidden"].forEach(id => document.getElementById(id).addEventListener("input", render));
+document.getElementById("sort").value = store.get("sort", "deadline");
+document.getElementById("sort").addEventListener("change", e => store.set("sort", e.target.value));
+render();
+</script>
+</body>
+</html>

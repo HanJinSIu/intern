@@ -5,122 +5,188 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>내 인턴 보드</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
+/* 디자인: 올영 HQ 챌린지 v2 톤 (흰 바탕·검정 글씨·큰 제목·선 위주) + 포인트 컬러 연한 하늘색 */
 :root{
-  --bg:#f6f7f9; --surface:#ffffff; --line:#e6e8ec; --text:#191c21; --sub:#6b7280; --faint:#9aa1ab;
-  --accent:#2f5bea; --accent-soft:#eaf0ff; --hot:#e5484d; --hot-soft:#fdecec; --new:#12a150; --new-soft:#e6f6ec;
-  --chip:#f1f3f5; --shadow:0 1px 2px rgba(16,24,40,.04),0 4px 14px rgba(16,24,40,.06);
+  --ink:#111; --ink2:#5F5F5F; --ink3:#9A9A9A; --line:#EEEEEE; --gray:#F6F6F6; --bg:#fff;
+  --sky:#7CC8F2; --sky-ink:#1B7EC2; --sky-soft:#EEF8FE; --sky-tile:#E6F4FD; --red:#EF4444;
+  --white:#fff; --shadow:0 10px 30px rgba(27,126,194,.12);
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#0f1115; --surface:#171a21; --line:#262a33; --text:#e9ecf1; --sub:#a0a7b3; --faint:#6f7783;
-    --accent:#7d9bff; --accent-soft:#1d2540; --hot:#ff6b6f; --hot-soft:#3a1d20; --new:#3ccf7d; --new-soft:#15301f;
-    --chip:#21252e; --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25);
+    --ink:#F2F4F6; --ink2:#B4BAC2; --ink3:#7D848D; --line:#262A30; --gray:#1A1D22; --bg:#111316;
+    --sky:#5AB4EA; --sky-ink:#8CCBF5; --sky-soft:#14222D; --sky-tile:#172833; --red:#FF6B6B;
+    --white:#1B1F24; --shadow:0 10px 30px rgba(0,0,0,.35);
   }
 }
 :root[data-theme="dark"]{
-  --bg:#0f1115; --surface:#171a21; --line:#262a33; --text:#e9ecf1; --sub:#a0a7b3; --faint:#6f7783;
-  --accent:#7d9bff; --accent-soft:#1d2540; --hot:#ff6b6f; --hot-soft:#3a1d20; --new:#3ccf7d; --new-soft:#15301f;
-  --chip:#21252e; --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25);
+  --ink:#F2F4F6; --ink2:#B4BAC2; --ink3:#7D848D; --line:#262A30; --gray:#1A1D22; --bg:#111316;
+  --sky:#5AB4EA; --sky-ink:#8CCBF5; --sky-soft:#14222D; --sky-tile:#172833; --red:#FF6B6B;
+  --white:#1B1F24; --shadow:0 10px 30px rgba(0,0,0,.35);
 }
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:"Noto Sans KR",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-.wrap{max-width:1180px;margin:0 auto;padding:28px 16px 60px}
-header{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:26px}
-h1{margin:0;font-size:26px;font-weight:800;letter-spacing:-.02em}
-.updated{color:var(--sub);font-size:13px;margin-top:6px}
-.stats{display:flex;gap:8px;flex-wrap:wrap}
-.stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 14px;font-size:13px;color:var(--sub)}
-.stat b{color:var(--text);font-size:16px;margin-left:4px}
-h2{font-size:19px;font-weight:800;margin:0 0 14px;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
-h2 .count{color:var(--accent);font-weight:700;font-size:15px}
-section{margin-bottom:38px}
+*{box-sizing:border-box;margin:0;padding:0}
+button,input,select{font:inherit;color:inherit;border:none;background:none}
+button{cursor:pointer}
+body{background:var(--bg);color:var(--ink);font-family:"Pretendard Variable",Pretendard,-apple-system,system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;letter-spacing:-.015em}
+svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
 
-/* 가로 캐러셀 */
-.rail-wrap{position:relative}
-.rail{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(250px,1fr);gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:2px 2px 10px;scrollbar-width:thin}
-.rail .card{scroll-snap-align:start}
-@media (min-width:1000px){.rail{grid-auto-columns:calc((100% - 48px)/4)}}
-.navbtn{position:absolute;top:42%;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--text);box-shadow:var(--shadow);cursor:pointer;font-size:18px;display:none}
-@media (min-width:700px){.navbtn{display:block}}
-.navbtn.l{left:-14px}.navbtn.r{right:-14px}
+/* 상단 바 */
+.appbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.appbar .wrap{height:60px;display:flex;align-items:center;gap:16px}
+.brand{font-size:19px;font-weight:900;letter-spacing:-.04em;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.brand i{width:9px;height:9px;border-radius:50%;background:var(--sky);display:inline-block}
+.search{flex:1;max-width:420px;margin-left:auto;display:flex;align-items:center;gap:8px;height:40px;padding:0 14px;border-radius:999px;background:var(--gray);color:var(--ink3)}
+.search input{flex:1;min-width:0;outline:none;color:var(--ink);font-size:14.5px}
+.search input::placeholder{color:var(--ink3)}
 
-/* 컨트롤 */
-.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
-.tabs{display:flex;gap:6px;flex-wrap:wrap}
-.tab{border:1px solid var(--line);background:var(--surface);color:var(--sub);padding:8px 14px;border-radius:999px;font:inherit;font-size:14px;font-weight:500;cursor:pointer}
-.tab.on{background:var(--text);color:var(--surface);border-color:var(--text)}
-.tab .n{opacity:.7;margin-left:4px;font-size:12px}
-.spacer{flex:1}
-input[type=search],select{font:inherit;font-size:14px;border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:10px;padding:8px 12px}
-input[type=search]{min-width:0;width:200px}
-.toggle{font-size:13px;color:var(--sub);display:flex;align-items:center;gap:5px;cursor:pointer;user-select:none}
+/* 큰 제목 */
+.hero{padding:34px 0 6px}
+.kicker{font-size:13.5px;font-weight:700;color:var(--sky-ink);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.kicker .dot{width:6px;height:6px;border-radius:50%;background:var(--sky)}
+.big{font-size:40px;font-weight:900;letter-spacing:-.05em;line-height:1.15;margin-top:8px}
+.big .num{color:var(--sky-ink)}
+.lead{font-size:15px;color:var(--ink2);margin-top:10px;line-height:1.55}
 
-/* 카드 그리드 */
-.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+/* 숫자 줄 (누르면 바로 걸러짐) */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);margin-top:26px;border-top:1.5px solid var(--ink);border-bottom:1px solid var(--line)}
+.stats button{padding:16px 0 15px;text-align:left;position:relative}
+.stats button+button{padding-left:18px;border-left:1px solid var(--line)}
+.stats small{display:block;font-size:12.5px;color:var(--ink2);font-weight:600}
+.stats b{display:block;font-size:26px;font-weight:900;letter-spacing:-.03em;margin-top:2px}
+.stats b span{font-size:14px;font-weight:700;margin-left:2px}
+.stats button.on small{color:var(--sky-ink)}
+.stats button.on b{color:var(--sky-ink)}
+.stats button.on::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--sky)}
+.stats button+button.on::after{left:0}
+.stats .red{color:var(--red)}
+
+/* 밑줄 탭 */
+.subtabs{display:flex;gap:26px;margin-top:30px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+.subtabs::-webkit-scrollbar{display:none}
+.subtabs button{padding:12px 0 13px;font-size:16px;color:var(--ink3);font-weight:700;position:relative;white-space:nowrap}
+.subtabs button .n{font-size:13px;margin-left:4px;font-weight:600}
+.subtabs button.on{color:var(--ink);font-weight:800}
+.subtabs button.on .n{color:var(--sky-ink)}
+.subtabs button.on::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2.5px;background:var(--ink)}
+
+/* 칩 + 정렬 */
+.tools{display:flex;align-items:center;gap:10px;margin-top:16px;flex-wrap:wrap}
+.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;flex:1;min-width:0}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;padding:8px 14px;border-radius:999px;border:1px solid #E2E2E2;border-color:var(--line);font-size:13.5px;font-weight:600;color:var(--ink2);background:var(--bg)}
+.chip.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.sort{display:flex;align-items:center;gap:2px;font-size:13.5px;font-weight:600;color:var(--ink2)}
+.sort select{appearance:none;-webkit-appearance:none;padding:6px 18px 6px 4px;cursor:pointer;outline:none;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%239A9A9A' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 4px center}
+.sort select option{color:#111}
+.count{font-size:13.5px;color:var(--ink3);margin:18px 0 12px}
+.count b{color:var(--ink)}
+
+/* 공고 카드 (올영 상품 카드 구조) */
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:30px 18px}
 @media (max-width:1000px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media (max-width:760px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:480px){.grid{grid-template-columns:1fr}}
-.card{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:14px;display:flex;flex-direction:column;text-decoration:none;color:inherit;transition:transform .12s,box-shadow .12s;min-width:0}
-.card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
-.card.hidden-item{opacity:.45}
-.logo{height:118px;display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--line);border-radius:14px 14px 0 0;background:#fff;overflow:hidden}
-.logo img{max-width:62%;max-height:64px;object-fit:contain}
-.mono{width:58px;height:58px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:22px;color:#fff}
-.body{padding:14px 16px 14px;display:flex;flex-direction:column;gap:6px;flex:1}
-.title{font-size:15px;font-weight:700;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:keep-all;overflow-wrap:anywhere;min-height:2.9em}
-.org{font-size:13px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.meta{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:8px;font-size:12.5px;color:var(--sub);gap:6px}
-.chips{display:flex;gap:5px;align-items:center;flex-wrap:wrap;min-width:0}
-.meta > span:last-child{white-space:nowrap;flex-shrink:0}
-.chip{border-radius:7px;padding:3px 8px;font-weight:700;font-size:12.5px;background:var(--chip);color:var(--sub)}
-.chip.hot{background:var(--hot-soft);color:var(--hot)}
-.chip.new{background:var(--new-soft);color:var(--new)}
-.chip.src{font-weight:500}
-.chip.core{background:var(--accent-soft);color:var(--accent)}
-.card.is-core{border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
-.actions{position:absolute;top:8px;right:8px;display:flex;gap:4px}
-.icon{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--faint);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;padding:0}
-.icon.on{color:#f5a524;border-color:#f5a52466}
-.badge-scrap{position:absolute;top:8px;left:8px;background:rgba(25,28,33,.78);color:#fff;font-size:11.5px;font-weight:700;border-radius:6px;padding:3px 7px}
-.empty{color:var(--sub);padding:40px 0;text-align:center;font-size:14px}
-footer{color:var(--faint);font-size:12px;text-align:center;margin-top:30px}
-@media (max-width:560px){input[type=search]{width:100%}.spacer{display:none}h1{font-size:22px}}
+@media (max-width:760px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 12px}}
+.card{display:block;text-decoration:none;color:inherit;min-width:0}
+.card.hidden-item{opacity:.4}
+.th{position:relative;aspect-ratio:4/3;border-radius:14px;background:var(--sky-tile);display:grid;place-items:center;overflow:hidden;transition:transform .25s ease, box-shadow .25s ease}
+.card:hover .th{transform:translateY(-3px);box-shadow:var(--shadow)}
+.logo-box{width:58%;height:52%;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;padding:10px 14px;box-shadow:0 1px 2px rgba(17,17,17,.04);overflow:hidden}
+.logo-box img{display:block;width:auto;height:auto;max-width:100%;max-height:64px;object-fit:contain}
+@media (max-width:760px){.logo-box img{max-height:46px}}
+.mono{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;font-weight:900;font-size:24px;color:#fff;letter-spacing:-.03em}
+.flag{position:absolute;left:10px;top:10px;display:flex;gap:4px}
+.flag span{font-size:11px;font-weight:800;padding:4px 7px;border-radius:6px;background:var(--ink);color:var(--bg);letter-spacing:.02em}
+.flag .new{background:var(--sky-ink);color:#fff}
+.flag .hot{background:var(--red);color:#fff}
+.scrap{position:absolute;left:10px;bottom:10px;font-size:11px;font-weight:800;padding:4px 7px;border-radius:6px;background:rgba(255,255,255,.94);color:var(--sky-ink)}
+.acts{position:absolute;right:8px;top:8px;display:flex;flex-direction:column;gap:6px}
+.ab{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.92);color:#9A9A9A;display:grid;place-items:center;box-shadow:0 1px 3px rgba(0,0,0,.08);transition:transform .15s}
+.ab:active{transform:scale(.88)}
+.ab svg.i{width:17px;height:17px}
+.ab.star.on{color:#F5A524}
+.ab.star.on svg.i{fill:#F5A524}
+.ab.more{opacity:0;transition:opacity .15s}
+.card:hover .ab.more{opacity:1}
+@media (hover:none){.ab.more{opacity:1}}
+.from{font-size:12.5px;color:var(--ink3);margin-top:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.from b{color:var(--ink2);font-weight:700}
+.nm{font-size:15px;font-weight:600;line-height:1.42;margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:keep-all;overflow-wrap:anywhere;min-height:2.84em}
+.pr{display:flex;align-items:baseline;gap:6px;margin-top:7px;font-size:13px;color:var(--ink2)}
+.pr em{font-style:normal;font-size:17px;font-weight:900;color:var(--ink);letter-spacing:-.02em}
+.pr em.red{color:var(--red)}
+.pr em.soft{font-size:14px;font-weight:800;color:var(--ink2)}
+.pr .v{margin-left:auto;font-size:12px;color:var(--ink3);white-space:nowrap}
+.tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+.tag{font-size:11.5px;font-weight:700;padding:4px 7px;border-radius:6px;background:var(--sky-soft);color:var(--sky-ink)}
+.tag.gray{background:var(--gray);color:var(--ink2)}
+.empty{grid-column:1/-1;text-align:center;color:var(--ink3);padding:70px 0;font-size:15px}
+footer{margin:60px 0 40px;padding-top:20px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink3);line-height:1.7}
+
+@media (max-width:760px){
+  .appbar .wrap{height:56px;gap:10px}
+  .brand{font-size:17px}
+  .hero{padding-top:24px}
+  .big{font-size:30px}
+  .lead{font-size:14px}
+  .stats button{padding:12px 0}
+  .stats button+button{padding-left:10px}
+  .stats small{font-size:11.5px}
+  .stats b{font-size:20px}
+  .subtabs{gap:20px;margin-top:22px}
+  .subtabs button{font-size:15px}
+  .nm{font-size:14px}
+  .pr em{font-size:15.5px}
+  .logo-box{width:70%;height:56%}
+}
+@media (prefers-reduced-motion: reduce){ .th,.ab{transition:none} }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <div>
-      <h1>내 인턴 보드</h1>
-      <div class="updated" id="updated"></div>
-    </div>
-    <div class="stats" id="stats"></div>
-  </header>
+<header class="appbar">
+  <div class="wrap">
+    <div class="brand"><i></i>INTERN&nbsp;BOARD</div>
+    <label class="search">
+      <svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input type="search" id="q" placeholder="회사·공고명 검색">
+    </label>
+  </div>
+</header>
 
-  <section>
-    <h2>전체 공고 <span class="count" id="allCount"></span></h2>
-    <div class="controls">
-      <div class="tabs" id="tabs"></div>
-      <div class="spacer"></div>
-      <input type="search" id="q" placeholder="회사·제목 검색">
-      <select id="sort">
+<main class="wrap">
+  <section class="hero">
+    <div class="kicker"><span class="dot"></span><span id="updated"></span></div>
+    <h1 class="big">지금 열린 인턴<br><span class="num" id="heroNum">0</span>개</h1>
+    <p class="lead">금융·투자, 전략·기획, AI·에이전트 공고만 모았어요. 카드를 누르면 회사 지원 페이지로 바로 가요.</p>
+    <div class="stats" id="stats"></div>
+  </section>
+
+  <nav class="subtabs" id="tabs"></nav>
+
+  <div class="tools">
+    <div class="chips" id="chips"></div>
+    <label class="sort">
+      <select id="sort" aria-label="정렬">
         <option value="deadline">마감 빠른순</option>
         <option value="new">새로 뜬 순</option>
         <option value="views">조회 많은 순</option>
       </select>
-      <label class="toggle"><input type="checkbox" id="starOnly"> ⭐ 관심만</label>
-      <label class="toggle"><input type="checkbox" id="showHidden"> 숨김 보기</label>
-    </div>
-    <div class="grid" id="grid"></div>
-  </section>
-  <footer>카드를 누르면 회사 지원 페이지로 이동 (📄 = 링커리어 공고) · 3시간마다 자동 갱신</footer>
-</div>
+    </label>
+  </div>
+  <div class="count" id="count"></div>
+  <div class="grid" id="grid"></div>
+
+  <footer>
+    링커리어 · 잡코리아 · 금융투자협회 회원사 채용안내에서 3시간마다 자동으로 모아요.<br>
+    ☆ 관심 · ✕ 숨기기는 이 브라우저에만 저장돼요. 📄 = 원래 공고 페이지.
+  </footer>
+</main>
 
 <!-- 공고 데이터: intern_alert.py 가 3시간마다 이 파일만 갱신 -->
 <script src="board_data.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
 <script>
 const DATA = window.BOARD_DATA || {updated: Date.now(), items: []};
 const DAY = 864e5, now = Date.now();
@@ -130,99 +196,146 @@ const store = {
 };
 let stars = new Set(store.get("stars", [])), hidden = new Set(store.get("hidden", []));
 let tab = store.get("tab", "전체");
+let quick = "all";   // all | new | hot | star | hidden
+const REDUCE = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 const items = DATA.items.filter(it => !(it.close_ms && it.close_ms < now));
 const dleft = it => it.close_ms ? Math.ceil((it.close_ms - now) / DAY) : null;
 const isNew = it => now - (it.first_seen || 0) < DAY;
+const isHot = it => !it.asap && dleft(it) !== null && dleft(it) <= 7;
 
-function ddayLabel(it){
-  const d = dleft(it);
-  if (it.asap) return "채용 시 마감";
-  if (d === null) return it.src === "금투협" ? (it.deadline || "") : "상시";
-  return d <= 0 ? "D-Day" : "D-" + d;
-}
-const PALETTE = ["#2f5bea","#0f9d76","#d9480f","#7048e8","#c2255c","#1c7ed6","#5c940d","#e67700"];
+const ICON = {
+  star: '<svg class="i" viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8-4.3-4.1 5.9-.9z"/></svg>',
+  x: '<svg class="i" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+  undo: '<svg class="i" viewBox="0 0 24 24"><path d="M4 9h11a5 5 0 010 10H9"/><path d="M8 5L4 9l4 4"/></svg>',
+  doc: '<svg class="i" viewBox="0 0 24 24"><path d="M14 3H6v18h12V7z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg>'
+};
+const GROUP_ICON = {"금융·투자":"💰", "전략·기획":"🧭", "AI·에이전트":"🤖"};
+const PALETTE = ["#1B7EC2","#0F9D76","#D9480F","#7048E8","#C2255C","#0B7285","#5C940D","#E67700"];
 function monoColor(s){ let h=0; for (const c of s) h = (h*31 + c.charCodeAt(0)) >>> 0; return PALETTE[h % PALETTE.length]; }
 function esc(s){ return String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
-function cleanOrg(s){ return s.replace(/^(\(주\)|주식회사|㈜)\s*/,"").replace(/\s*(\(주\)|주식회사)$/,""); }
-
-function card(it){
-  const d = dleft(it), hot = !it.asap && d !== null && d <= 7;
-  const org = cleanOrg(it.org || "");
-  const logo = it.logo
-    ? `<img src="${esc(it.logo)}" alt="" loading="lazy" onerror="this.replaceWith(mono('${esc(org).replace(/'/g,"")}'))">`
-    : monoHTML(org);
-  const scrap = it.scraps ? `<span class="badge-scrap" title="링커리어에서 이 공고를 스크랩(북마크)한 사람 수">스크랩 ${it.scraps > 999 ? "999+" : it.scraps}</span>` : "";
-  return `<a class="card ${hidden.has(it.id) ? "hidden-item" : ""}" href="${esc(it.apply_email ? it.url : (it.apply || it.url))}" target="_blank" rel="noopener" title="${it.apply_email ? "이메일 지원 공고 — 링커리어에서 확인 (" + esc(it.apply_email) + ")" : it.apply ? "회사 지원 페이지로 이동" : "공고 페이지로 이동"}">
-    <div class="logo">${logo}</div>${scrap}
-    <div class="actions">
-      <button class="icon ${stars.has(it.id) ? "on" : ""}" title="관심" onclick="toggle(event,'stars','${it.id}')">${stars.has(it.id) ? "★" : "☆"}</button>
-      ${it.src === "링커리어" ? `<button class="icon" title="링커리어 공고 보기" onclick="openUrl(event,'${esc(it.url)}')">📄</button>` : ""}
-      <button class="icon" title="${hidden.has(it.id) ? "다시 보기" : "숨기기"}" onclick="toggle(event,'hidden','${it.id}')">${hidden.has(it.id) ? "↺" : "✕"}</button>
-    </div>
-    <div class="body">
-      <div class="title">${esc(it.title)}</div>
-      <div class="org">${esc(org)}</div>
-      <div class="meta">
-        <div class="chips">
-          <span class="chip ${hot ? "hot" : ""}">${esc(ddayLabel(it))}</span>
-          ${isNew(it) ? '<span class="chip new">NEW</span>' : ""}
-          ${it.bigco ? '<span class="chip core">🏢 대기업</span>' : ""}
-          ${it.apply_email ? '<span class="chip">📧 메일지원</span>' : ""}
-          <span class="chip src">${esc(it.src === "금투협" ? "금투협" : it.group)}</span>
-        </div>
-        <span>${it.views != null ? "조회 " + Number(it.views).toLocaleString() : esc(it.posted ? "게시 " + it.posted.slice(5) : "")}</span>
-      </div>
-    </div>
-  </a>`;
+function cleanOrg(s){ return s.replace(/^(\(주\)|주식회사|㈜|\(유\))\s*/,"").replace(/\s*(\(주\)|주식회사|㈜|\(유\))$/,""); }
+function cleanTitle(it, org){
+  // '[카카오게임즈] [체험형 인턴] 전략기획 인턴' → 앞의 회사명 괄호 제거 (회사명은 위에 따로 보임)
+  const t = it.title.replace(/^\s*\[[^\]]{1,25}\]\s*/, "");
+  return t || it.title;
 }
 function monoHTML(name){ const ch = (name || "?").trim().charAt(0); return `<div class="mono" style="background:${monoColor(name||"?")}">${esc(ch)}</div>`; }
 function mono(name){ const t = document.createElement("template"); t.innerHTML = monoHTML(name); return t.content.firstChild; }
+
+function dday(it){
+  const d = dleft(it);
+  if (it.asap) return {txt:"채용 시 마감", cls:"soft", sub:""};
+  if (d === null) return {txt:"상시", cls:"soft", sub: it.posted ? "게시 " + it.posted.slice(5).replace("-","/") : ""};
+  const md = new Date(it.close_ms); const sub = `${md.getMonth()+1}/${md.getDate()} 마감`;
+  return {txt: d <= 0 ? "D-Day" : "D-" + d, cls: d <= 7 ? "red" : "", sub};
+}
+
+function card(it){
+  const org = cleanOrg(it.org || "");
+  const href = it.apply_email ? it.url : (it.apply || it.url);
+  const logo = it.logo
+    ? `<div class="logo-box"><img src="${esc(it.logo)}" alt="" loading="lazy" onerror="this.parentNode.replaceWith(mono('${esc(org).replace(/'/g,"")}'))"></div>`
+    : monoHTML(org);
+  const dd = dday(it);
+  const flags = [isNew(it) ? '<span class="new">NEW</span>' : "", isHot(it) ? '<span class="hot">마감임박</span>' : ""].join("");
+  const st = stars.has(it.id), hd = hidden.has(it.id);
+  return `<a class="card ${hd ? "hidden-item" : ""}" href="${esc(href)}" target="_blank" rel="noopener"
+      title="${it.apply_email ? "이메일 지원 공고 — 원래 공고에서 확인 (" + esc(it.apply_email) + ")" : it.apply ? "회사 지원 페이지로 이동" : "공고 페이지로 이동"}">
+    <div class="th">
+      ${logo}
+      ${flags ? `<div class="flag">${flags}</div>` : ""}
+      ${it.scraps ? `<span class="scrap" title="링커리어에서 스크랩(북마크)한 사람 수">스크랩 ${it.scraps > 999 ? "999+" : it.scraps}</span>` : ""}
+      <div class="acts">
+        <button class="ab star ${st ? "on" : ""}" title="관심" aria-label="관심" onclick="toggle(event,'stars','${it.id}')">${ICON.star}</button>
+        ${it.apply && !it.apply_email ? `<button class="ab more" title="원래 공고 보기 (${esc(it.src)})" aria-label="원래 공고" onclick="openUrl(event,'${esc(it.url)}')">${ICON.doc}</button>` : ""}
+        <button class="ab more" title="${hd ? "다시 보기" : "숨기기"}" aria-label="숨기기" onclick="toggle(event,'hidden','${it.id}')">${hd ? ICON.undo : ICON.x}</button>
+      </div>
+    </div>
+    <div class="from"><b>${esc(org)}</b> · ${esc(it.src)}</div>
+    <div class="nm">${esc(cleanTitle(it, org))}</div>
+    <div class="pr"><em class="${dd.cls}">${esc(dd.txt)}</em>${dd.sub ? `<span>${esc(dd.sub)}</span>` : ""}
+      ${it.views != null ? `<span class="v">조회 ${Number(it.views).toLocaleString()}</span>` : ""}</div>
+    <div class="tags">
+      <span class="tag">${GROUP_ICON[it.group] || ""} ${esc(it.group || "")}</span>
+      ${it.bigco ? '<span class="tag gray">대기업</span>' : ""}
+      ${it.apply_email ? '<span class="tag gray">메일지원</span>' : ""}
+    </div>
+  </a>`;
+}
 
 function toggle(e, key, id){
   e.preventDefault(); e.stopPropagation();
   const set = key === "stars" ? stars : hidden;
   set.has(id) ? set.delete(id) : set.add(id);
-  store.set(key, [...set]); render();
+  store.set(key, [...set]); render(false);
 }
 function openUrl(e, url){ e.preventDefault(); e.stopPropagation(); window.open(url, "_blank", "noopener"); }
 
 const GROUPS = ["전체", "금융·투자", "전략·기획", "AI·에이전트"];
-const inGroup = (it, g) => g === "전체" || (g === "🏢 대기업" ? !!it.bigco : it.group === g);
-function render(){
-  const visible = items.filter(it => !hidden.has(it.id));
-  // 통계
-  document.getElementById("updated").textContent = "마지막 갱신 " + new Date(DATA.updated).toLocaleString("ko-KR", {month:"long", day:"numeric", hour:"2-digit", minute:"2-digit"});
-  const newN = visible.filter(isNew).length, hotN = visible.filter(it => { const d = dleft(it); return d !== null && d <= 7; }).length;
-  document.getElementById("stats").innerHTML =
-    `<div class="stat">전체<b>${visible.length}</b></div><div class="stat">오늘 NEW<b>${newN}</b></div><div class="stat">D-7 이내<b>${hotN}</b></div><div class="stat">⭐ 관심<b>${[...stars].filter(id => items.some(i => i.id === id)).length}</b></div>`;
+const QUICK = [["all","전체"],["new","오늘 NEW"],["hot","D-7 이내"],["star","☆ 관심"],["hidden","숨긴 공고"]];
+const inGroup = (it, g) => g === "전체" || it.group === g;
+function passQuick(it){
+  if (quick === "hidden") return hidden.has(it.id);
+  if (hidden.has(it.id)) return false;
+  if (quick === "new") return isNew(it);
+  if (quick === "hot") return isHot(it);
+  if (quick === "star") return stars.has(it.id);
+  return true;
+}
 
-  // 탭
+let firstPaint = true;
+function render(animate = true){
+  const visible = items.filter(it => !hidden.has(it.id));
+  const u = new Date(DATA.updated);
+  document.getElementById("updated").textContent =
+    `${u.getMonth()+1}월 ${u.getDate()}일 ${u.toLocaleTimeString("ko-KR",{hour:"numeric",minute:"2-digit"})} 업데이트 · 3시간마다 자동`;
+
+  const nNew = visible.filter(isNew).length, nHot = visible.filter(isHot).length;
+  const nStar = items.filter(i => stars.has(i.id)).length;
+  const statDefs = [["all","전체 공고",visible.length,""],["new","오늘 새로 뜬",nNew,""],["hot","마감 D-7 이내",nHot,"red"],["star","관심 표시",nStar,""]];
+  document.getElementById("stats").innerHTML = statDefs.map(([k,l,n,c]) =>
+    `<button class="${quick === k ? "on" : ""}" onclick="setQuick('${k}')"><small>${l}</small><b class="${c}">${n}<span>건</span></b></button>`).join("");
+
   document.getElementById("tabs").innerHTML = GROUPS.map(g => {
     const n = visible.filter(i => inGroup(i, g)).length;
-    return `<button class="tab ${g === tab ? "on" : ""}" onclick="setTab('${g}')">${g}<span class="n">${n}</span></button>`;
+    return `<button class="${g === tab ? "on" : ""}" onclick="setTab('${g}')">${g === "전체" ? "" : GROUP_ICON[g] + " "}${g}<span class="n">${n}</span></button>`;
   }).join("");
+  document.getElementById("chips").innerHTML = QUICK.map(([k,l]) =>
+    `<button class="chip ${quick === k ? "on" : ""}" onclick="setQuick('${k}')">${l}</button>`).join("");
 
-  // 그리드
   const q = document.getElementById("q").value.trim().toLowerCase();
   const sort = document.getElementById("sort").value;
-  const starOnly = document.getElementById("starOnly").checked, showHidden = document.getElementById("showHidden").checked;
-  let list = items.filter(it =>
-    (showHidden || !hidden.has(it.id)) &&
-    inGroup(it, tab) &&
-    (!starOnly || stars.has(it.id)) &&
-    (!q || (it.title + " " + it.org).toLowerCase().includes(q)));
+  let list = items.filter(it => inGroup(it, tab) && passQuick(it) && (!q || (it.title + " " + it.org).toLowerCase().includes(q)));
   const far = 9e15;
-  if (sort === "deadline") list.sort((a,b) => (a.close_ms || far) - (b.close_ms || far));
+  const key = it => it.asap ? far - 1 : (it.close_ms || far);
+  if (sort === "deadline") list.sort((a,b) => key(a) - key(b));
   if (sort === "new") list.sort((a,b) => (b.first_seen || 0) - (a.first_seen || 0) || b.id.localeCompare(a.id));
   if (sort === "views") list.sort((a,b) => (b.views || 0) - (a.views || 0));
-  document.getElementById("allCount").textContent = list.length + "건";
-  document.getElementById("grid").innerHTML = list.length ? list.map(card).join("") : '<div class="empty">조건에 맞는 공고가 없어요</div>';
+  document.getElementById("count").innerHTML = `<b>${list.length}</b>개의 공고`;
+  const grid = document.getElementById("grid");
+  grid.innerHTML = list.length ? list.map(card).join("") : '<div class="empty">조건에 맞는 공고가 없어요</div>';
+
+  // 움직임: 숫자는 올라가고, 카드는 차례로 등장 (Anime.js — 없거나 '동작 줄이기' 설정이면 생략)
+  if (window.anime && !REDUCE) {
+    if (firstPaint) {
+      const o = {n: 0};
+      anime({targets: o, n: visible.length, round: 1, duration: 900, easing: "easeOutExpo",
+             update: () => document.getElementById("heroNum").textContent = o.n});
+    }
+    if (animate) anime({targets: "#grid .card", opacity: [0, 1], translateY: [14, 0],
+                        delay: anime.stagger(35, {start: 60}), duration: 480, easing: "easeOutCubic"});
+  }
+  if (!window.anime || REDUCE || !firstPaint) document.getElementById("heroNum").textContent = visible.length;
+  firstPaint = false;
 }
 function setTab(g){ tab = g; store.set("tab", g); render(); }
-["q","sort","starOnly","showHidden"].forEach(id => document.getElementById(id).addEventListener("input", render));
-document.getElementById("sort").value = store.get("sort", "deadline");
-document.getElementById("sort").addEventListener("change", e => store.set("sort", e.target.value));
+function setQuick(k){ quick = k; render(); }
+document.getElementById("q").addEventListener("input", () => render(false));
+const sortEl = document.getElementById("sort");
+sortEl.value = store.get("sort", "deadline");
+sortEl.addEventListener("change", e => { store.set("sort", e.target.value); render(); });
+if (!GROUPS.includes(tab)) tab = "전체";
 render();
 </script>
 </body>

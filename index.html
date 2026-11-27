@@ -163,7 +163,7 @@ footer{margin:60px 0 40px;padding-top:20px;border-top:1px solid var(--line);font
   <div class="wrap">
     <div class="kicker"><span class="dot"></span><span id="updated"></span></div>
     <h1 class="big">지금 열린 인턴<br><span class="num" id="heroNum">0</span>개</h1>
-    <p class="lead">금융·투자, 컨설팅, 전략·기획, AI·에이전트 공고만 모았어요. 카드를 누르면 회사 지원 페이지로 바로 가요.</p>
+    <p class="lead">금융·투자, 전략·기획, AI·에이전트 공고만 모았어요. 카드를 누르면 회사 지원 페이지로 바로 가요.</p>
     <div class="pills" id="pills"></div>
   </div>
 </section>
@@ -172,8 +172,8 @@ footer{margin:60px 0 40px;padding-top:20px;border-top:1px solid var(--line);font
 
 <div class="wrap">
   <footer>
-    링커리어 · 잡코리아 · 금융투자협회 회원사 채용안내에서 3시간마다 자동으로 모아요.<br>
-    ☆ 관심 · ✕ 숨기기는 이 브라우저에만 저장돼요. 📄 = 원래 공고 페이지.
+    링커리어 · 잡코리아 · 자소설닷컴 · 금융투자협회 · 한국벤처캐피탈협회 채용안내에서 3시간마다 자동으로 모아요.<br>
+    ☆ 관심 · ✕ 숨기기는 이 브라우저에만 저장돼요. 📄 = 원래 공고 페이지.<span id="ownerNote"></span>
   </footer>
 </div>
 
@@ -188,6 +188,33 @@ const store = {
   set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)) } catch(e){} }
 };
 let stars = new Set(store.get("stars", [])), hidden = new Set(store.get("hidden", []));
+// 내 기기 모드 (2026-11-28): '내기기_등록링크.txt'의 주소(끝이 #me=비밀키)를 한 번 열면 이 브라우저가 키를 기억 (#me-off 로 해제)
+// 내 기기에서 ☆를 켜면 Cloudflare 서버로 바로 보냄 → 키가 맞으면 노션 지원현황에 추가 (1~2초)
+// 친구 기기에는 키가 없어서 ☆가 그 브라우저에만 저장됨. 키 없이 보내도 서버가 거절
+if (location.hash.startsWith("#me=")) { store.set("ownerKey", location.hash.slice(4)); history.replaceState(null, "", location.pathname); }
+if (location.hash === "#me-off") { store.set("ownerKey", ""); history.replaceState(null, "", location.pathname); }
+const OWNER_KEY = store.get("ownerKey", "");
+const OWNER = !!OWNER_KEY && !!DATA.notion_worker;
+function toast(msg){
+  let t = document.getElementById("toast");
+  if (!t) { t = document.createElement("div"); t.id = "toast";
+    t.style.cssText = "position:fixed;left:50%;bottom:24px;transform:translateX(-50%);max-width:calc(100% - 32px);padding:10px 16px;border-radius:10px;background:#111;color:#fff;font-size:14px;z-index:99;box-shadow:0 4px 16px rgba(0,0,0,.2);transition:opacity .3s";
+    document.body.appendChild(t); }
+  t.textContent = msg; t.style.opacity = "1";
+  clearTimeout(t._h); t._h = setTimeout(() => t.style.opacity = "0", 3000);
+}
+async function sendToNotion(id){
+  const it = DATA.items.find(x => x.id === id);
+  if (!it) return;
+  toast("노션에 보내는 중…");
+  try {
+    const pick = ({org, title, url, apply, apply_email, close_ms, src}) => ({org, title, url, apply, apply_email, close_ms, src});
+    const r = await fetch(DATA.notion_worker, {method: "POST", headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({key: OWNER_KEY, item: pick(it)})});
+    const j = await r.json();
+    toast(j.ok ? (j.status === "추가" ? "✅ 노션에 추가: " : "☑️ 이미 노션에 있어요: ") + j.title : "❌ " + (j.msg || "실패"));
+  } catch(e) { toast("❌ 노션에 못 보냈어요 (인터넷 확인)"); }
+}
 const REDUCE = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 const items = DATA.items.filter(it => !(it.close_ms && it.close_ms < now));
@@ -201,7 +228,7 @@ const ICON = {
   undo: '<svg class="i" viewBox="0 0 24 24"><path d="M4 9h11a5 5 0 010 10H9"/><path d="M8 5L4 9l4 4"/></svg>',
   doc: '<svg class="i" viewBox="0 0 24 24"><path d="M14 3H6v18h12V7z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg>'
 };
-const GROUP_ICON = {"금융·투자":"💰", "컨설팅":"💼", "전략·기획":"🧭", "AI·에이전트":"🤖"};
+const GROUP_ICON = {"금융·투자":"💰", "전략·기획":"🧭", "AI·에이전트":"🤖"};
 const PALETTE = ["#1B7EC2","#0F9D76","#D9480F","#7048E8","#C2255C","#0B7285","#5C940D","#E67700"];
 function monoColor(s){ let h=0; for (const c of s) h = (h*31 + c.charCodeAt(0)) >>> 0; return PALETTE[h % PALETTE.length]; }
 function esc(s){ return String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
@@ -243,7 +270,7 @@ function card(it){
         <button class="ab more" title="${hd ? "다시 보기" : "숨기기"}" aria-label="숨기기" onclick="toggle(event,'hidden','${it.id}')">${hd ? ICON.undo : ICON.x}</button>
       </div>
     </div>
-    <div class="from"><b>${esc(org)}</b> · ${esc(it.src)}</div>
+    <div class="from" title="${it.also_on ? "같은 공고가 " + esc([...new Set(it.also_on)].join(", ")) + "에도 있어요. 가장 먼저 발견한 곳으로 연결해요." : ""}"><b>${esc(org)}</b> · ${esc(it.src)}${it.also_on ? " 외 " + new Set(it.also_on).size + "곳" : ""}</div>
     <div class="nm">${esc(cleanTitle(it, org))}</div>
     <div class="pr"><em class="${dd.cls}">${esc(dd.txt)}</em>${dd.sub ? `<span>${esc(dd.sub)}</span>` : ""}
       ${it.views != null ? `<span class="v">조회 ${Number(it.views).toLocaleString()}</span>` : ""}</div>
@@ -259,17 +286,17 @@ function toggle(e, key, id){
   e.preventDefault(); e.stopPropagation();
   const set = key === "stars" ? stars : hidden;
   set.has(id) ? set.delete(id) : set.add(id);
+  if (key === "stars" && OWNER && set.has(id)) sendToNotion(id);  // 켤 때만 (끌 때는 노션에서 안 지움)
   store.set(key, [...set]); render(false);
 }
 function openUrl(e, url){ e.preventDefault(); e.stopPropagation(); window.open(url, "_blank", "noopener"); }
 
-const GROUPS = ["금융·투자", "컨설팅", "전략·기획", "AI·에이전트"];
+const GROUPS = ["금융·투자", "전략·기획", "AI·에이전트"];
 // 섹션 정의: [키, 제목, 설명, 고르는 조건]
 const SECTIONS = [
   ["new",  "오늘 새로 뜬 공고", "최근 24시간 안에 잡힌 공고", it => isNew(it)],
   ["hot",  "🔥 마감 임박", "D-7 이내, 서두르세요", it => isHot(it)],
   ["금융·투자", "💰 금융·투자", "자산운용사·증권사·PE·VC", it => it.group === "금융·투자"],
-  ["컨설팅", "💼 컨설팅", "전략·회계법인 컨설팅·RA", it => it.group === "컨설팅"],
   ["전략·기획", "🧭 전략·기획", "전략기획·사업개발·컨설팅", it => it.group === "전략·기획"],
   ["AI·에이전트", "🤖 AI·에이전트", "에이전트·LLM·AI 서비스", it => it.group === "AI·에이전트"],
   ["star", "☆ 관심 표시한 공고", "", it => stars.has(it.id)],
@@ -359,6 +386,7 @@ sortEl.addEventListener("change", e => { store.set("sort", e.target.value); rend
 document.getElementById("q").addEventListener("input", () => render(false));
 let rw; addEventListener("resize", () => { clearTimeout(rw); rw = setTimeout(() => view === "home" && render(false), 200); });
 // 주소 끝 #hot, #new, #star, #금융·투자 … 로 그 섹션 전체보기를 바로 열 수 있음 (공유용)
+if (OWNER) { const n = document.getElementById("ownerNote"); if (n) n.textContent = " · 내 기기: ☆를 누르면 노션 지원현황에 추가돼요."; }
 const h0 = decodeURIComponent(location.hash.slice(1));
 if (h0 && (SECTIONS.some(x => x[0] === h0) || h0 === "hidden")) view = h0;
 render();
